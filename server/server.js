@@ -1,12 +1,21 @@
 const mongoose = require('mongoose');
 const Document = require('./Document');
 
-mongoose.connect('mongodb://localhost:27017/google-docs-clone', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true
-});
+// mongoose.connect('mongodb://localhost:27017/google-docs-clone', {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//     useFindAndModify: false,
+//     useCreateIndex: true
+// },
+//     e => console.log(e));
+
+mongoose.connect('mongodb://localhost:27017/google-docs-clone')
+    .then(() => {
+        console.log('Conexão com o MongoDB estabelecida com sucesso');
+    })
+    .catch((error) => {
+        console.error('Erro na conexão com o MongoDB:', error);
+    });
 
 const io = require('socket.io')(3001, {
     cors: {
@@ -28,12 +37,11 @@ io.on('connection', socket => {
             // socket.broadcast.emit('receive-changes', delta);
             socket.broadcast.to(documentId).emit('receive-changes', delta);
         });
+        
+        socket.on('save-document', async data => {
+            await Document.findByIdAndUpdate(documentId, { data });
+        });
     });
-
-    socket.on('save-document', async data => {
-        await Document.findByIdAndUpdate(documentId, { data });
-    });
-
 })
 
 async function findOrCreateDocument(id) {
