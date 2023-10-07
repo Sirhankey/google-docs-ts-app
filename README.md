@@ -51,12 +51,6 @@ Siga estas etapas para iniciar o projeto completo:
     ```bash
     "devStart": "nodemon server.js"
 
-9. Configure as variáveis de ambiente para o servidor criando um arquivo .env na raiz do diretório do servidor com as informações do MongoDB:
-
-    ```bash
-    MONGODB_USER=
-    MONGODB_PASSWORD=
-
 Após iniciar o projeto, você pode acessar o documento no seu navegador em http://localhost:3000.
 
 Criar um Novo Documento
