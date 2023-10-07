@@ -3,6 +3,7 @@ import './App.css';
 import TextEditor from './Components/TextEditor';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { v4 as uuidV4 } from 'uuid';
+import Dashboard from './Components/Dashboard';
 
 function App() {
   return (
@@ -13,6 +14,9 @@ function App() {
         </Route>
         <Route path="/documents/:id">
           <TextEditor />
+        </Route>
+        <Route path="/documents">
+          <Dashboard />
         </Route>
       </Switch>
     </Router>
