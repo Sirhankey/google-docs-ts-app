@@ -4,7 +4,10 @@ import "quill/dist/quill.snow.css"
 import { io } from "socket.io-client"
 import { useParams } from 'react-router-dom';
 
+// Intervalo de salvamento automático
 const SAVE_INTERVAL = 2000;
+
+// Opções da barra de ferramentas do Quill
 const TOOLBAR_OPTIONS = [
     [{ header: [1, 2, 3, 4, 5, 6, false] }],
     [{ font: [] }],
@@ -18,10 +21,14 @@ const TOOLBAR_OPTIONS = [
 ];
 
 export default function TextEditor() {
+    // Obtém o ID do documento a partir dos parâmetros da URL
     const { id: documentId } = useParams<{ id: string }>();
+
+    // Estados para armazenar a instância do Quill e do socket
     const [quill, setQuill] = useState<any>();
     const [socket, setSocket] = useState<any>();
 
+    // Configuração inicial do socket
     useEffect(() => {
         const s = io("http://localhost:3001");
         setSocket(s);
@@ -30,6 +37,7 @@ export default function TextEditor() {
         }
     }, []);
 
+    // Carrega o conteúdo do documento do servidor quando a página é carregada
     useEffect(() => {
         if (!socket || !quill) return;
         socket.once("load-document", (document: any) => {
@@ -40,6 +48,7 @@ export default function TextEditor() {
 
     }, [socket, quill, documentId]);
 
+    // Salva periodicamente o conteúdo do documento no servidor
     useEffect(() => {
         if (!socket || !quill) return;
         const interval = setInterval(() => {
@@ -50,6 +59,7 @@ export default function TextEditor() {
         }
     }, [socket, quill]);
 
+    // Envia as mudanças de texto para o servidor quando o usuário edita o documento
     useEffect(() => {
         if (!socket || !quill) return;
         const handler = (delta: any, oldDelta: any, source: any) => {
@@ -65,6 +75,7 @@ export default function TextEditor() {
 
     }, [socket, quill]);
 
+    // Atualiza o editor do Quill quando mudanças são recebidas do servidor
     useEffect(() => {
         if (!socket || !quill) return;
 
@@ -80,6 +91,7 @@ export default function TextEditor() {
 
     }, [socket, quill]);
 
+    // Referência de wrapper para o elemento do Quill
     const wrapperRef = useCallback((wrapper: HTMLDivElement | null) => {
         if (!wrapper) return;
         wrapper.innerHTML = "";
@@ -92,6 +104,7 @@ export default function TextEditor() {
         setQuill(q);
     }, []);
 
+    // Renderização do componente
     return (
         <div className='container' ref={wrapperRef}>
         </div>
